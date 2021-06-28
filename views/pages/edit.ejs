@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html>
+<%- include('../partials/_head.ejs') %>
+
+  <body class="w3-content w3-border-left w3-border-right">
+    <!-- Navigation Bar -->
+    <div class="w3-bar w3- w3-large">
+      <% if (userType=='admin' ) { %>
+        <a href="/admin/#rooms" class="w3-bar-item w3-button w3-right w3-mobile">Buscar</a>
+        <a href="/admin/add-new" class="w3-bar-item w3-button w3-right w3-mobile">Añadir</a>
+        <% } %>
+          <% if (userType=='member' ) { %>
+
+            <a href="/#rooms" class="w3-bar-item w3-right w3-light-grey w3-button w3-mobile">Buscar</a>
+
+            <% } %>
+    </div>
+    <!-- ------------------------------------------------------------------------------------------------- -->
+
+    <!-- Sidebar/menu -->
+    <nav class="w3-sidebar w3-light-grey w3-collapse w3-top" style="z-index: 3; width: 260px" id="mySidebar">
+      <a href="/" class="w3-bar-item w3-button w3-green w3-mobile w3-center"><i
+          class="w3-margin-center"></i>Trustroofs</a>
+
+      <div class="w3-container w3-display-container w3-padding-16">
+        <i onclick="w3_close()" class="
+            fa fa-remove
+            w3-hide-large w3-button w3-transparent w3-display-topright
+          "></i>
+        <hr />
+
+        <!-- ------------------------------------------------------------------------------------------------- -->
+        <!-- FORM Set availability -->
+
+        <!--         <form action="/booking/setAvailability" method="POST" id="setAvailabilityForm">
+          <input type="hidden" name="idApartment" value="<%= apartment.id %>" />
+          <p>
+            <label for="checkIn"> Set availability<i class="fa fa-calendar-check-o"></i> Check In</label>
+          </p>
+          <input class="w3-input w3-border" type="date" placeholder="DD MM YYYY" name="checkIn" required />
+          <p>
+            <label><i class="fa fa-calendar-o"></i> Check Out</label>
+          </p>
+          <input class="w3-input w3-border" type="date" placeholder="DD MM YYYY" name="CheckOut" required />
+          <p>
+            <label><i class="fa fa-male"></i> Adultos</label>
+          </p>
+          <input class="w3-input w3-border" type="number" value="1" name="Adults" min="1" max="6" />
+          <p>
+            <label><i class="fa fa-child"></i>Menores</label>
+          </p>
+          <input class="w3-input w3-border" type="number" value="0" name="Kids" min="0" max="6" />
+          <p>
+            <button formtarget="editor" class="w3-button w3-block w3-green w3-left-align" type="submit">
+              <i class="fa fa-search w3-margin-right w3-animate-fading"></i>
+              Set Availability
+            </button>
+          </p>
+        </form> -->
+      </div>
+    </nav>
+    <!-- ------------------------------------------------------------------------------------------------- -->
+
+    <!-- Top menu on small screens -->
+    <header class="w3-bar w3-top w3-hide-large w3-black w3-xlarge">
+      <span class="w3-bar-item">Trustroofs</span>
+      <a href="javascript:void(0)" class="w3-right w3-bar-item w3-button" onclick="w3_open()"><i
+          class="fa fa-bars"></i></a>
+    </header>
+
+    <!-- Overlay effect when opening sidebar on small screens -->
+    <div class="w3-overlay w3-hide-large" onclick="w3_close()" style="cursor: pointer" title="close side menu"
+      id="myOverlay"></div>
+
+    <!-- ------------------------------------------------------------------------------------------------- -->
+
+    <!-- Big Container -->
+    <div class="w3-main w3-white" style="margin-left: 260px">
+      <!-- Push down content on small screens -->
+      <div class="w3-hide-large" style="margin-top: 80px"></div>
+      <!-- ------------------------------------------------------------------------------------------------- -->
+
+      <!-- FORM Edit Apartments   -->
+      <form action="/admin/apartment/<%= apartment._id%>" method="POST" id="editForm">
+
+        <div class="w3-container" id="apartment">
+
+          <!-- _id -->
+          <input type="hidden" id="idApartment" name="idApartment" value="<%= apartment._id%>" />
+
+          <!-- title -->
+          <h2 class="w3-text-green">
+            <label for="title"></label>
+            <input type="text" maxlength="70" id="title" name="title" value="<%=apartment.title%>" size="36"
+              placeholder="Set a title for your alocation." />
+          </h2>
+
+          <p>
+            <label for="size"><i class="fa fa-fw fa-home"></i></label>
+            <input type="number" min="15" max="1000" id="size" name="size" required
+              value="<%= apartment.size%>" />m<sup>2</sup>
+
+            <label for="price"><i class="fa fa-fw fa-money"></i></label>
+            <input type="number" min="1" max="1000000" id="price" name="price" required value="<%= apartment.price%>" />
+          </p>
+
+          <!-- editable main photo -->
+          <div class="w3-display-container mySlides">
+            <label for="mainPhoto"></label>
+            <input type="url" required id="mainPhoto" name="mainPhoto" value="<%= apartment.mainPhoto%>"
+              class="w3-block" placeholder="Set a valid url to your location photographs" />
+            <img src="<%= apartment.mainPhoto%>" alt="main photo" style="width: 100%; margin-bottom: -6px" />
+
+            <div class="w3-display-bottomleft w3-container ">
+              <!-- editable photo caption -->
+              <% if(apartment.mainPhoto) { %>
+                <label for="mainPhotoCap"></label>
+                <input type="text" id="mainPhotoCap" name="mainPhotoCap" value="<%= apartment.mainPhotoCap%>"
+                  class="w3-block" />
+                <% } %>
+            </div>
+          </div>
+
+          <!-- editable photo 1 -->
+          <div class="w3-display-container mySlides">
+            <label for="photo1"></label>
+            <input type="url" required id="photo1" name="photo1" value="<%= apartment.photo1%>" class="w3-block" />
+            <img src="<%= apartment.photo1%>" alt="photo 1" style="width: 100%; margin-bottom: -6px" />
+
+            <div class="w3-display-bottomleft w3-container ">
+              <!-- editable photo caption -->
+              <% if(apartment.photo1) { %>
+                <label for="photo1Cap"></label>
+                <input type="text" id="photo1Cap" name="photo1Cap" value="<%= apartment.photo1Cap%>" class="w3-block" />
+                <% } %>
+            </div>
+          </div>
+
+          <!-- editable photo 2 -->
+          <div class="w3-display-container mySlides">
+            <label for="photo2"></label>
+            <input type="url" required id="photo2" name="photo2" value="<%= apartment.photo2%>" class="w3-block" />
+            <img src="<%= apartment.photo2%>" alt="photo 2" style="width: 100%; margin-bottom: -6px" />
+
+            <div class="w3-display-bottomleft w3-container ">
+              <!-- editable photo caption -->
+              <% if(apartment.photo2) { %>
+                <label for="photo2Cap"></label>
+                <input type="text" id="photo2Cap" name="photo2Cap" value="<%= apartment.photo2Cap%>" class="w3-block" />
+                <% } %>
+            </div>
+          </div>
+
+          <!-- editable photo 3 -->
+          <div class="w3-display-container mySlides">
+            <label for="photo3"></label>
+            <input type="url" required id="photo3" name="photo3" value="<%= apartment.photo3%>" class="w3-block" />
+            <img src="<%= apartment.photo3%>" alt="photo 3" style="width: 100%; margin-bottom: -6px" />
+
+            <div class="w3-display-bottomleft w3-container ">
+              <!-- editable photo caption -->
+              <% if(apartment.photo3) { %>
+                <label for="photo3Cap"></label>
+                <input type="text" id="photo3Cap" name="photo3Cap" value="<%= apartment.photo3Cap%>" class="w3-block" />
+                <% } %>
+            </div>
+          </div>
+
+          <!-- ------------------------------------------------------------------------------------------------- -->
+
+          <div class="w3-row-padding w3-section">
+            <div class="w3-col s3">
+              <img class="demo w3-opacity w3-hover-opacity-off" src="<%= apartment.mainPhoto%>"
+                style="width: 100%; height:100px; cursor: pointer" onclick="currentDiv(1)" title="Foto 1" />
+            </div>
+            <div class="w3-col s3">
+              <img class="demo w3-opacity w3-hover-opacity-off" src="<%= apartment.photo1%>"
+                style="width: 100%; height:100px ; cursor: pointer" onclick="currentDiv(2)" title="Foto 2" />
+            </div>
+            <div class="w3-col s3">
+              <img class="demo w3-opacity w3-hover-opacity-off" src="<%= apartment.photo2%>"
+                style="width: 100%; height:100px; cursor: pointer" onclick="currentDiv(3)" title="Foto 3" />
+            </div>
+            <div class="w3-col s3">
+              <img class="demo w3-opacity w3-hover-opacity-off" src="<%= apartment.photo3%>"
+                style="width: 100%; height:100px; cursor: pointer" onclick="currentDiv(4)" title="Foto 4" />
+            </div>
+          </div>
+
+          <div class="w3-container">
+            <h4><strong>Amenities</strong></h4>
+            <div class="w3-row w3-large">
+              <div class="w3-col s6">
+
+                <!-- max people -->
+                <label for="maxPeople"><i class="fa fa-fw fa-male"></i></label>
+                <input type="number" required id="maxPeople" name="maxPeople" value="<%= apartment.maxPeople %>" />
+                <hr />
+                <!-- bathrooms -->
+                <label for="bathrooms"><i class="fa fa-fw fa-bath"></i></label>
+                <input type="number" required id="bathrooms" name="bathrooms" value="<%= apartment.bathrooms %>" />
+                <hr />
+                <!-- beds -->
+                <label for="beds"><i class="fa fa-fw fa-bed"></i></label>
+                <input type="number" required id="beds" name="beds" value="<%= apartment.beds %>" />
+
+              </div>
+              <div class="w3-col s6">
+                <p>
+                  <!-- checkIn from -->
+                  <label for="checkInFrom"><i class="fa fa-fw fa-clock-o"></i>Check In</label>
+                  <input type="text" required id="checkInFrom" name="checkInFrom"
+                    value="<%= apartment.checkInFrom %>" />
+                </p>
+                <p>
+                  <!-- checkOut until -->
+                  <label for="checkOutUntil"><i class="fa fa-fw fa-clock-o"></i>Check Out</label>
+                  <input type="text" required id="checkOutUntil" name="checkOutUntil"
+                    value="<%= apartment.checkOutUntil %>" />
+                </p>
+              </div>
+            </div>
+            <hr />
+
+            <!-- ------------------------------------------------------------------------------------------------- -->
+
+            <h4><strong>Amenities</strong></h4>
+            <div class="w3-row w3-large">
+              <div class="w3-col s6">
+                <!-- shower -->
+                <label for="shower"><i class="fa fa-fw fa-shower"></i></label>
+                <% if (apartment.services.shower==undefined || apartment.services.shower==null) { %>
+                  <input type="checkbox" id="shower" name="shower" value="true" />
+                  <% } else { %>
+                    <input type="checkbox" id="shower" name="shower" value="true" checked />
+                    <% } %>
+
+
+                      <!-- wifi -->
+                      <label for="wifi"><i class="fa fa-fw fa-wifi"></i></label>
+                      <% if (apartment.services.shower==undefined || apartment.services.shower==null) { %>
+                        <input type="checkbox" id="wifi" name="wifi" value="true" />
+                        <% } else { %>
+                          <input type="checkbox" id="wifi" name="wifi" value="true" checked />
+                          <% } %>
+
+                            <!-- tv -->
+                            <label for="tv"><i class="fa fa-fw fa-tv"></i></label>
+                            <% if (apartment.services.tv==undefined || apartment.services.tv==null) { %>
+                              <input type="checkbox" id="tv" name="tv" value="true" />
+                              <% } else { %>
+                                <input type="checkbox" id="tv" name="tv" value="true" checked />
+                                <% } %>
+              </div>
+
+              <div class="w3-col s6">
+                <!-- kitchen -->
+                <label for="kitchen"><i class="fa fa-fw fa-cutlery"></i></label>
+                <% if (apartment.services.kitchen==undefined || apartment.services.kitchen==null) { %>
+                  <input type="checkbox" id="kitchen" name="kitchen" value="true" />
+                  <% } else { %>
+                    <input type="checkbox" id="kitchen" name="kitchen" value="true" checked />
+                    <% } %>
+
+                      <!-- heating -->
+                      <label for="heating"><i class="fa fa-fw fa-thermometer"></i></label>
+                      <% if (apartment.services.heating==undefined || apartment.services.heating==null) { %>
+                        <input type="checkbox" id="heating" name="heating" value="true" />
+                        <% } else { %>
+                          <input type="checkbox" id="heating" name="heating" value="true" checked />
+                          <% } %>
+
+                            <!-- accesible -->
+                            <label for="accesible"><i class="fa fa-fw fa-wheelchair"></i></label>
+                            <% if (apartment.services.accesible==undefined || apartment.services.accesible==null) { %>
+                              <input type="checkbox" id="accesible" name="accesible" value="true" />
+                              <% } else { %>
+                                <input type="checkbox" id="accesible" name="accesible" value="true" checked />
+                                <% } %>
+
+              </div>
+            </div>
+            <hr />
+            <!-- ------------------------------------------------------------------------------------------------- -->
+
+            <h4><strong>Description</strong></h4>
+            <p>
+              <!-- description -->
+              <label for="description"></label>
+              <input type="text" size="50" required id="description" name="description"
+                value="<%= apartment.description %>" />
+
+            </p>
+            <p>
+              Payment methods:
+              <select name="payment">
+                <option>
+                  <%= apartment.payment[0] %>
+                </option>
+                <option>
+                  <%= apartment.payment[1] %>
+                </option>
+                <option>
+                  <%= apartment.payment[2] %>
+                </option>
+                <option>
+                  <%= apartment.payment[3] %>
+                </option>
+                <option>
+                  <%= apartment.payment[4] %>
+                </option>
+                <option>
+                  <%= apartment.payment[5] %>
+                </option>
+              </select>
+              <hr />
+            <h4><strong>Rules</strong></h4>
+            <p>
+              <!-- rules -->
+              <label for="rules"></label>
+              <input type="text" required id="rules" name="rules" value="<%= apartment.rules %>" />
+            </p>
+
+          </div>
+
+          <hr />
+          <!-- ------------------------------------------------------------------------------------------------- -->
+
+          <!-- Contact -->
+          <div class="w3-container" id="contact">
+            <h2>Información de Contacto</h2>
+            <!-- contactName -->
+            <p>
+              <label for="contactName"><i class="fa fa-male" style="width: 30px"></i></label>
+              <input type="text" required id="contactName" name="contactName"
+                value="<%= apartment.contact.contactName %>" />
+            </p>
+
+            <!-- address -->
+            <p>
+              <label for="address"><i class="fa fa-map-marker" style="width: 30px"></i></label>
+              <input type="text" required id="address" name="address" value="<%= apartment.contact.address %>" />
+            </p>
+
+            <!-- phone -->
+            <p>
+              <label for="phone"><i class="fa fa-phone" style="width: 30px"></i></label>
+              <input type="text" required id="phone" name="phone" value="<%= apartment.contact.phone %>" />
+            </p>
+
+            <!-- email -->
+            <p>
+              <label for="email"><i class="fa fa-envelope" style="width: 30px"></i></label>
+              <input type="text" required id="email" name="email" value="<%= apartment.contact.email %>" />
+            </p>
+
+            <!-- province -->
+            <p>
+              <label for="province"><i class="fa fa-envelope" style="width: 30px"></i></label>
+              <input type="text" required id="province" name="province" value="<%= apartment.location.province %>" />
+            </p>
+
+             <!-- city -->
+             <p>
+              <label for="city"><i class="fa fa-envelope" style="width: 30px"></i></label>
+              <input type="text" required id="city" name="city" value="<%= apartment.location.city %>" />
+            </p>
+
+             <!-- gps coordenates -->
+             <p>
+              <label for="gpsLon"><i class="fa fa-envelope" style="width: 30px"></i></label>
+              <input type="text" required id="gpsLon" name="gpsLon" value="<%= apartment.location.gpsLon %>" />
+              <label for="gpsLat"><i class="fa fa-envelope" style="width: 30px"></i></label>
+              <input type="text" required id="gpsLat" name="gpsLat" value="<%= apartment.location.gpsLat %>" />
+            </p>
+            
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <div class="w3-container">
+          <p>
+            <button type="submit" formaction="editForm" class="w3-button w3-blue w3-third">Confirm Edit</button>
+          </p>
+        </div>
+      </form>
+      <!-- ------------------------------------------------------------------------------------------------- -->
+
+      <script>
+        // Script to open and close sidebar when on tablets and phones
+        function w3_open() {
+          document.getElementById("mySidebar").style.display = "block";
+          document.getElementById("myOverlay").style.display = "block";
+        }
+
+        function w3_close() {
+          document.getElementById("mySidebar").style.display = "none";
+          document.getElementById("myOverlay").style.display = "none";
+        }
+
+        // Slideshow Apartment Images
+        var slideIndex = 1;
+        showDivs(slideIndex);
+
+        function plusDivs(n) {
+          showDivs((slideIndex += n));
+        }
+
+        function currentDiv(n) {
+          showDivs((slideIndex = n));
+        }
+
+        function showDivs(n) {
+          var i;
+          var x = document.getElementsByClassName("mySlides");
+          var dots = document.getElementsByClassName("demo");
+          if (n > x.length) {
+            slideIndex = 1;
+          }
+          if (n < 1) {
+            slideIndex = x.length;
+          }
+          for (i = 0; i < x.length; i++) {
+            x[i].style.display = "none";
+          }
+          for (i = 0; i < dots.length; i++) {
+            dots[i].className = dots[i].className.replace(" w3-opacity-off", "");
+          }
+          x[slideIndex - 1].style.display = "block";
+          dots[slideIndex - 1].className += " w3-opacity-off";
+        }
+      </script>
+
+      <%- include('../partials/_footer.ejs') %>
+  </body>
+
+</html>

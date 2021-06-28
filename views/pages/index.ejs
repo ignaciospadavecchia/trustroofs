@@ -1,0 +1,257 @@
+<%- include('../partials/_head.ejs') %>
+
+  <body class="w3-animate-opacity">
+
+    <!-- Navigation Bar -->
+    <div class="w3-bar w3-collapse">
+      <a href="/" class="w3-bar-item w3-button w3-green w3-mobile"><i class="w3-margin-right">Trustroofs</a>
+      <% if (userType=='admin' ) { %>
+        <a href="/admin/#rooms" class="w3-bar-item w3-button w3-mobile">Buscar</a>
+        <a href="/admin/add-new" class="w3-bar-item w3-button w3-mobile">Hospedar</a>
+        <a href="/" class="w3-bar-item w3-button w3-right w3-light-grey w3-mobile">Logout</a>
+        <% } %>
+
+          <% if (userType=='member' ) { %>
+            <a href="/#rooms" class="w3-bar-item w3-button w3-mobile">Buscar</a>
+            <a href="/admin" class="w3-bar-item w3-button w3-right w3-light-grey w3-mobile">Login</a>
+            <% } %>
+
+    </div>
+    <!-- ------------------------------------------------------------------------------------------------- -->
+
+    <!-- Header -->
+    <header class="w3-display-container w3-content" style="max-width:1500px;">
+      <img class="w3-image" src="https://cdn.zmescience.com/wp-content/uploads/2017/06/topas-eco-lodge_001.jpg"
+        alt="Loading..." style="min-width:1000px" width="1500" height="800">
+      <div class="w3-display-left w3-padding w3-col l6 m8">
+        <div class="w3-container w3-green">
+          <!-- <h2><i class="fa fa-bed w3-margin-right"></i></h2> -->
+        </div>
+        <div class="w3-container w3-white w3-padding-16 w3-animate-opacity">
+
+          <!-- Check availability form -->
+
+          <% if (userType=='admin' ) { %>
+            <form action="admin/booking/occupancy" class="w3-mobile" method="GET">
+              <% } %>
+                <% if (userType=='member' ) { %>
+                  <form action="/booking/occupancy" class="w3-mobile" method="GET">
+                    <% } %>
+                      <input type="hidden" name="idApartment" value="<%= apartments.id %>">
+
+                      <div class="w3-row-padding" style="margin:0 -16px;">
+
+                        <div class="w3-half w3-margin-bottom">
+                          <label for="checkIn"><i class="fa fa-calendar-o"></i> Entrada</label>
+                          <input id="checkIn" class="w3-input w3-border" type="date" placeholder="DD MM YYYY"
+                            name="checkIn" required>
+                        </div>
+
+                        <div class="w3-half">
+                          <label for="checkOut"><i class="fa fa-calendar-o"></i> Salida</label>
+                          <input id="checkOut" class="w3-input w3-border" type="date" placeholder="DD MM YYYY"
+                            name="checkOut" required>
+                        </div>
+                        
+                      </div>
+                      <div>
+                        <button class="w3-button w3-dark-grey" type="submit"><i class="fa fa-search "></i></button>
+                         <p> <%= feedback %></p>
+                      </div>
+                      
+
+                  </form>
+        </div>
+      </div>
+    </header>
+
+    <!-- ------------------------------------------------------------------------------------------------- -->
+
+    <!-- MAIN -->
+    <% if (member || admin) { %>
+      <div class="w3-content" style="max-width:1532px;">
+
+        <!-- Check Dates Title -->
+        <% if (member || admin) { %>
+          <div class="w3-container w3-margin-top w3-center" id="rooms">
+            <h3>Encuentra hospedaje sustentable y regenerativo. </h3>
+          </div>
+          <% } %>
+
+            <!-- ------------------------------------------------------------------------------------------------- -->
+
+            <div class="w3-card w3-center">
+              <!-- Filter  -->
+
+              <div class="w3-row-padding w3-center">
+
+
+                <% if (userType=='admin' ) { %>
+                  <form action="/search/admin" class="w3-mobile" method="GET">
+                    <% } %>
+                      <% if (userType=='member' ) { %>
+                        <form action="/search" class="w3-mobile" method="GET">
+                          <% } %>
+
+                            <div class="w3-row-padding" style="margin:8px -16px;">
+                              <div class="w3-half w3-margin-bottom">
+                                <label for="maxPeople"><i class="fa fa-male"></i> Capacidad</label>
+                                <input class="w3-input w3-border" type="number" name="maxPeople" id="maxPeople" min="1" max="50">
+                              </div>
+
+                              <!-- Filter by Price -->
+                              <div class="w3-half w3-margin-bottom">
+                                <label for="price">Presupuesto</label>
+                                <input type="number" min="0" max="1000000" id="price" name="price"
+                                  value="<%= filters.price %>" class="w3-input w3-border w3-center" placeholder="€">
+                              </div>
+
+
+                              <div class="w3-half">
+                                <label for="city"><i class="fa fa-marker-map"></i> Ciudad</label>
+                                <input class="w3-input w3-border" type="text" name="city" id="city">
+                              </div>
+
+                              <div class="w3-half">
+                                <label for="province"><i class="fa fa-marker-map"></i> Provincia</label>
+                                <input class="w3-input w3-border" type="text" name="province" id="province">
+                              </div>
+                            </div>
+
+                            <!-- Submit -->
+                          
+                            <button type="submit" class="w3-button w3-block w3-green w3-center"><i
+                                class="fa fa-filter"></i>
+                            </button>
+                        </form>
+              </div>
+
+            </div>
+
+            <!-- ------------------------------------------------------------------------------------------------- -->
+            <!-- Apartment Card Builder -->
+            <% if (member || admin) { %>
+              <div class="w3-row-padding w3-padding-16">
+                <% apartments.forEach(function(apartment){ %>
+                  <!-- An Apartment -->
+                  <div class="w3-third w3-margin-bottom w3-cards w3-animate-opacity apartment__name apartment">
+
+                    <div class="w3-cards"></div>
+                    <img src="<%= apartment.mainPhoto%> " alt="Apartment reference"
+                      style="width: 400px; height: 300px;">
+                    <h3>
+                      <%= apartment.title %>
+                    </h3>
+                    <h6 class="w3-opacity">
+                      <%= apartment.price%> €
+                    </h6>
+                    <p>Size:<%= apartment.size%> <sup>2</sup></p>
+                   <!--  <p>Province:<%= apartment.location.province%>
+                    </p>
+                    <p>City:<%= apartment.location.city%>
+                    </p>
+                    <p>Capacity:<%= apartment.maxPeople %>
+                    </p> -->
+
+                    <p class="w3-large">
+                      <% if ( apartment.services.shower){ %>
+                        <i class="fa fa-bath"></i>
+                        <% } %>
+
+                          <% if(apartment.services.wifi) { %>
+                            <i class="fa fa-wifi"></i>
+                            <% } %>
+
+                              <% if(apartment.services.tv){ %>
+                                <i class="fa fa-tv"></i>
+                                <% } %>
+
+                                  <% if(apartment.services.kitchen){ %>
+                                    <i class="fa fa-cutlery"></i>
+                                    <% } %>
+
+                                      <% if(apartment.services.heating){ %>
+                                        <i class="fa fa-thermometer"></i>
+                                        <% } %>
+
+                                          <% if(apartment.services.accesible){ %>
+                                            <i class="fa fa-wheelchair"></i>
+                                            <% } %>
+
+                    </p>
+
+                    <% if (userType=='admin' ) { %>
+
+                      <a href="/admin/apartment/<%= apartment._id%>"><button><i
+                            class="fas fa-pencil-alt"></i></button></a>
+
+                      <% if (apartment._id) {%>
+                        <a href="/admin/apartment/<%= apartment._id%>/deactivate"><button><i
+                              class="fas fa-eraser"></i></button></a>
+                        <!-- <a href="/admin/apartment/<%= apartment._id%>/reactivate"><button><i
+                              class="far fa-thumbs-up"></i></button></a> -->
+                        <% } %>
+
+                          <% } else { %>
+                            <a href="/apartment/<%= apartment._id%>"><button>Más detalles</button></a>
+                            <% } %>
+                  </div>
+                  <% }) %>
+              </div>
+              <% } %>
+
+                <!-- Location -->
+                <% if (member || adming) { %>
+                  <div class="w3-row-padding" id="about">
+                  </div>
+                  <% } %>
+      </div>
+      <% } %>
+
+        <!-- ------------------------------------------------------------------------------------------------- -->
+        <script>
+          // Script to open and close sidebar when on tablets and phones
+          function w3_open() {
+            document.getElementById("mySidebar").style.display = "block";
+            document.getElementById("myOverlay").style.display = "block";
+          }
+
+          function w3_close() {
+            document.getElementById("mySidebar").style.display = "none";
+            document.getElementById("myOverlay").style.display = "none";
+          }
+
+          // Slideshow Apartment Images
+          var slideIndex = 1;
+          showDivs(slideIndex);
+
+          function plusDivs(n) {
+            showDivs(slideIndex += n);
+          }
+
+          function currentDiv(n) {
+            showDivs(slideIndex = n);
+          }
+
+          function showDivs(n) {
+            var i;
+            var x = document.getElementsByClassName("mySlides");
+            var dots = document.getElementsByClassName("demo");
+            if (n > x.length) { slideIndex = 1 }
+            if (n < 1) { slideIndex = x.length }
+            for (i = 0; i < x.length; i++) {
+              x[i].style.display = "none";
+            }
+            for (i = 0; i < dots.length; i++) {
+              dots[i].className = dots[i].className.replace(" w3-opacity-off", "");
+            }
+            x[slideIndex - 1].style.display = "block";
+            dots[slideIndex - 1].className += " w3-opacity-off";
+          }
+        </script>
+
+        <%- include('../partials/_footer.ejs') %>
+
+  </body>
+
+  </html>
