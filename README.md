@@ -16,6 +16,6 @@
     => [Anadir]         /admin/add-new           @index
     => [Editar]         /admin/apartments/:id    @index
     => [Eliminar]       /admin
- * "Login"              /admin   -- wip          @index
- * "Subscribe"          /register --wip          @index
+ 
+ 
 
